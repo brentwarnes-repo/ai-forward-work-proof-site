@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document-to-Record Case Study</title>
+<style>
+  :root {
+    --ink:        #14161a;
+    --ink-soft:   #4a5058;
+    --ink-faint:  #7c848e;
+    --rule:       #e3e6ea;
+    --bg:         #ffffff;
+    --bg-soft:    #f7f8fa;
+    --accent:     #1f5f4f;
+    --accent-soft:#e8f0ed;
+    --flag:       #8a5a00;
+    --flag-soft:  #fdf4e3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:        #eef1f4;
+      --ink-soft:   #b9c0c9;
+      --ink-faint:  #8b93a0;
+      --rule:       #2a2f37;
+      --bg:         #14161a;
+      --bg-soft:    #1b1e24;
+      --accent:     #6fbfa6;
+      --accent-soft:#1c2b26;
+      --flag:       #e0a94a;
+      --flag-soft:  #2b2313;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink:        #eef1f4;
+    --ink-soft:   #b9c0c9;
+    --ink-faint:  #8b93a0;
+    --rule:       #2a2f37;
+    --bg:         #14161a;
+    --bg-soft:    #1b1e24;
+    --accent:     #6fbfa6;
+    --accent-soft:#1c2b26;
+    --flag:       #e0a94a;
+    --flag-soft:  #2b2313;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: min(72ch, 92vw);
+    margin: 0 auto;
+    padding: 2.5rem 1rem 5rem;
+  }
+  h1, h2, h3 { line-height: 1.25; font-weight: 700; color: var(--ink); }
+  h1 { font-size: 1.9rem; margin: 0 0 0.6rem; }
+  h2 {
+    font-size: 1.3rem;
+    margin: 3rem 0 1rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  h3 { font-size: 1.05rem; margin: 1.6rem 0 0.5rem; color: var(--accent); }
+  p { margin: 0 0 1rem; color: var(--ink); max-width: 68ch; }
+  ul, ol { margin: 0 0 1rem; padding-left: 1.3rem; }
+  li { margin-bottom: 0.4rem; max-width: 66ch; }
+  strong { color: var(--ink); }
+  a { color: var(--accent); }
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
+  /* Hero */
+  .hero {
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2rem;
+  }
+  .eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+  .oneliner {
+    font-size: 1.2rem;
+    color: var(--ink-soft);
+    margin: 0.75rem 0 1.1rem;
+    max-width: 62ch;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+  }
+
+  /* Fact strip */
+  .factstrip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.5rem 0 2rem;
+  }
+  .fact {
+    background: var(--bg-soft);
+    padding: 1rem 1.1rem;
+    min-width: 0;
+  }
+  .fact .num {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1.2;
+  }
+  .fact .label {
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  /* Callouts */
+  .callout {
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin: 1.4rem 0;
+    border: 1px solid var(--rule);
+  }
+  .callout.accent { background: var(--accent-soft); border-color: var(--accent-soft); }
+  .callout.flag { background: var(--flag-soft); border-color: var(--flag-soft); }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .callout-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .callout.accent .callout-label { color: var(--accent); }
+  .callout.flag .callout-label { color: var(--flag); }
+
+  /* Claim-status pills */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; }
+  .pill.observed { background: var(--accent-soft); color: var(--accent); }
+  .pill.observed::before { background: var(--accent); }
+  .pill.validated { background: var(--accent-soft); color: var(--accent); }
+  .pill.validated::before { background: var(--accent); border: 1px solid var(--accent); }
+  .pill.expected { background: var(--flag-soft); color: var(--flag); }
+  .pill.expected::before { background: var(--flag); }
+  .pill.unknown { background: var(--bg-soft); color: var(--ink-faint); border-color: var(--rule); }
+  .pill.unknown::before { background: var(--ink-faint); }
+
+  /* Evidence table */
+  .tablewrap { overflow-x: auto; margin: 1.2rem 0; border: 1px solid var(--rule); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; }
+  th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--rule); vertical-align: top; font-size: 0.94rem; }
+  th { background: var(--bg-soft); color: var(--ink-faint); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Technical details */
+  details.tech {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 0.2rem 1.2rem 1.2rem;
+    margin: 1.6rem 0;
+    background: var(--bg-soft);
+  }
+  details.tech > summary {
+    cursor: pointer;
+    padding: 1rem 0;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    list-style: none;
+  }
+  details.tech > summary::-webkit-details-marker { display: none; }
+  details.tech > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--accent);
+    transition: transform 0.15s ease;
+  }
+  details.tech[open] > summary::before { transform: rotate(90deg); }
+  details.tech > summary:hover { color: var(--accent); }
+
+  /* Diagram */
+  .diagram-wrap { overflow-x: auto; margin: 1.2rem 0; }
+  .diagram-wrap svg { display: block; width: 100%; height: auto; max-width: 620px; margin: 0 auto; }
+
+  /* Capability list */
+  .cap-list { list-style: none; padding: 0; margin: 1.2rem 0; }
+  .cap-list li {
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.6rem;
+    background: var(--bg-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    max-width: 100%;
+  }
+  .cap-list strong { color: var(--accent); }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+  }
+
+  @media print {
+    body { background: #fff; color: #14161a; }
+    details.tech { border: 1px solid #ccc; }
+    details.tech:not([open]) { display: block; }
+    .callout, .fact, .cap-list li { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <header class="hero">
+    <div class="eyebrow">Case Study — Document-to-Record Automation</div>
+    <h1>From Inconsistent Source Documents to Governed Operational Records</h1>
+    <p class="oneliner">
+      Partner paperwork arrives in a different shape every time. This workflow turns it into
+      trustworthy system records — and never lets automation write anything downstream without
+      a named person's sign-off.
+    </p>
+    <div class="meta-row">
+      <span class="tag">Intelligent document processing</span>
+      <span class="tag">Human-in-the-loop governance</span>
+      <span class="tag">Deterministic QA</span>
+      <span class="tag">Higher-education partner network</span>
+    </div>
+  </header>
+
+  <section aria-label="Executive summary">
+    <p>
+      Partner institutions send course-equivalency information in inconsistent formats — a structured
+      PDF from one, a spreadsheet with ambiguous unit labels from another, a document with multi-course
+      relationships that don't reduce to simple one-to-one mappings from a third. Getting this right has
+      historically required careful manual interpretation, and an earlier, lighter-weight attempt at
+      automating a similar import once failed on an unstated formatting assumption before the defect was
+      caught and fixed.
+    </p>
+    <p>
+      This project replaced that fragility with a governed pipeline. Every source file is checked against
+      a locked, known fingerprint before extraction begins. Deterministic, source-specific adapters convert
+      it into a canonical record format. Automated checks and a separate verification pass catch problems
+      before any human sees the output, and genuine ambiguity is flagged rather than guessed at. Nothing
+      reaches a live system without two separate, named-human approval gates — one for trusting the
+      extraction, a later and separate one for approving the write. In the one case that reached execution,
+      a bounded set of governed updates was applied to a staging environment and independently confirmed
+      against the exact expected result before being accepted as complete.
+    </p>
+
+    <div class="factstrip">
+      <div class="fact"><span class="num">3</span><span class="label">partner source documents processed under this pipeline</span></div>
+      <div class="fact"><span class="num">213 → 182</span><span class="label">source items reconciled into canonical records, zero unaccounted</span></div>
+      <div class="fact"><span class="num">2</span><span class="label">separate named-human approval gates: extraction, then write-back</span></div>
+      <div class="fact"><span class="num">3 req / 9 cells</span><span class="label">governed staging write, verified by readback, zero rollback</span></div>
+      <div class="fact"><span class="num">0</span><span class="label">production writes — every mutation stayed in staging</span></div>
+    </div>
+  </section>
+
+  <h2>The Situation</h2>
+  <p>
+    Each partner institution publishes its own course-equivalency information in whatever format it
+    happens to use internally. Someone has to read every one of these documents, decide what an
+    ambiguous unit label actually means, preserve relationships where a single equivalency spans more
+    than one course, and turn all of it into consistent records — ready to be checked against, and
+    eventually written into, the receiving system.
+
+  </p>
+  <p>
+    That work is not new, and it has not always gone smoothly. In an earlier, separate, lighter-weight
+    attempt at automating a similar import for a different partner, the tool assumed a specific document
+    header would be present in the source file. It wasn't, and the import broke on that assumption until
+    the mismatch was diagnosed and the dependency removed. Once fixed, that pass correctly reconciled
+    every eligible row — 46 source rows in, 46 output rows out, with no missing or extra rows and no
+    credit mismatches.
+    <span class="pill observed" style="margin-left:0.3rem;">Observed — earlier, separate effort</span>
+  </p>
+  <div class="callout flag">
+    <span class="callout-label">Scoping note</span>
+    <p>
+      That earlier result belongs to a different, non-governed precursor tool — not the pipeline described
+      in this case study. It is included here because it is a genuine before/after with a measured
+      outcome, and because it illustrates both sides of the same problem: this kind of conversion is
+      achievable, and it is also easy to get quietly wrong when a source-format assumption goes
+      unchecked. It is not evidence of this project's pipeline processing that volume.
+    </p>
+  </div>
+
+  <h2>Why It Mattered</h2>
+  <p>
+    Getting this wrong has real downstream consequences: a dropped course relationship, a misread credit
+    unit, or a correction that was logged but never actually applied can mean a prospective student sees
+    the wrong transfer credit, or a partner's published catalog drifts out of sync with what was actually
+    approved. Because the source material is genuinely inconsistent — some values are truly ambiguous,
+    some relationships involve more than one course at a time — treating every case with the same
+    mechanical rule was never going to be safe. The earlier header-mismatch failure is a concrete example
+    of exactly this risk: an automation that trusted a source-format assumption too far, caught only
+    because a person happened to notice the output didn't look right.
+  </p>
+
+  <h2>What Was Done</h2>
+  <p>The pipeline moves every source document through a controlled sequence before any record is trusted:</p>
+  <ul>
+    <li><strong>Exact-source verification.</strong> Every source document is checked against a known,
+      approved fingerprint before extraction begins. A file that doesn't match a locked source — including
+      a similarly named or restructured substitute — is rejected before processing.</li>
+    <li><strong>Deterministic structured extraction.</strong> Bounded, source-specific adapters read the
+      locked inputs and emit records into a canonical schema, preserving source relationships and
+      source-stated values rather than inventing unsupported interpretations.</li>
+    <li><strong>Automated QA and a separate verification pass.</strong> Validation rules and automated
+      tests check source accountability, required relationship structures, unit preservation, and
+      record integrity. A separate pass then reloads the emitted output and independently reconciles it.</li>
+    <li><strong>Exception isolation.</strong> Where a source genuinely contains an ambiguity, the workflow
+      flags the record for human disposition instead of guessing at a resolution.</li>
+    <li><strong>Controlled downstream staging preparation.</strong> After extraction approval, a no-write
+      readiness pass compares approved records against the live target system, separates already-aligned
+      records from proposed changes, and holds unsupported cases outside the mutation set.</li>
+  </ul>
+  <div class="callout accent">
+    <span class="callout-label">Two gates, never merged</span>
+    <p>
+      A named reviewer approves that extracted records faithfully reflect their source — including explicit
+      acknowledgment of any unresolved ambiguity. Approving an extraction does not authorize writing it
+      anywhere. A separate, later named-human decision determines whether a specific proposed downstream
+      change is safe to apply. The two decisions are never collapsed into one.
+    </p>
+  </div>
+
+  <h2>What Changed</h2>
+  <p>
+    Across the three source documents, the pipeline accounted for every material source item, emitting
+    182 canonical records from 213 source items after explicitly excluding superseded versions and
+    duplicate aliases — rather than silently dropping them. A subset of records preserved a genuine
+    unit-of-credit ambiguity and stayed review-required until a named human explicitly accepted the
+    source-faithful representation rather than forcing a numeric conversion. A named human then approved
+    the full extraction set.
+  </p>
+  <p>
+    A later downstream readiness check compared the approved records against the live target without
+    writing anything: most already matched and needed no change. A small, narrow set was isolated as a
+    candidate patch. That candidate later cleared a separate write-back approval, was re-checked
+    immediately before mutation to rule out drift, and was executed as three governed update requests
+    changing nine cells in a staging environment. Post-write verification confirmed the exact expected
+    result, and no rollback was needed.
+  </p>
+
+  <details class="tech">
+    <summary>Technical depth — architecture, data flow, and validation design</summary>
+
+    <h3>Pipeline architecture</h3>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 600 900" role="img" aria-label="Flow diagram: source document moves through fingerprint verification, deterministic extraction, automated QA and verification, a named-human extraction approval gate, a no-write readiness comparison, a named-human write-back approval gate, a drift check, and finally a verified staging write.">
+        <style>
+          .box { fill: var(--bg); stroke: var(--rule); stroke-width: 1.5; }
+          .box.gate { fill: var(--accent-soft); stroke: var(--accent); }
+          .box.final { fill: var(--accent); stroke: var(--accent); }
+          .lbl { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; font-weight: 600; fill: var(--ink); }
+          .lbl.gate { fill: var(--accent); }
+          .lbl.final { fill: var(--bg); }
+          .sub { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 11.5px; fill: var(--ink-faint); }
+          .arrow { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+        </style>
+        <defs>
+          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-faint)"/>
+          </marker>
+        </defs>
+
+        <rect class="box" x="100" y="10" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="34" text-anchor="middle">Source document</text>
+        <text class="sub" x="300" y="52" text-anchor="middle">PDF or spreadsheet, partner-supplied</text>
+        <path class="arrow" d="M300,66 L300,96"/>
+
+        <rect class="box" x="100" y="100" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="124" text-anchor="middle">Exact-source verification</text>
+        <text class="sub" x="300" y="142" text-anchor="middle">Rejects anything not matching a locked fingerprint</text>
+        <path class="arrow" d="M300,156 L300,186"/>
+
+        <rect class="box" x="100" y="190" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="214" text-anchor="middle">Deterministic extraction</text>
+        <text class="sub" x="300" y="232" text-anchor="middle">Source-specific adapter → canonical schema</text>
+        <path class="arrow" d="M300,246 L300,276"/>
+
+        <rect class="box" x="100" y="280" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="304" text-anchor="middle">Automated QA + separate verification pass</text>
+        <text class="sub" x="300" y="322" text-anchor="middle">Reconciles source items to canonical records</text>
+        <path class="arrow" d="M300,336 L300,366"/>
+
+        <rect class="box gate" x="100" y="370" width="400" height="56" rx="8"/>
+        <text class="lbl gate" x="300" y="394" text-anchor="middle">Named-human extraction approval</text>
+        <text class="sub" x="300" y="412" text-anchor="middle">Gate 1 — ambiguity acknowledged, not resolved by guessing</text>
+        <path class="arrow" d="M300,426 L300,456"/>
+
+        <rect class="box" x="100" y="460" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="484" text-anchor="middle">No-write readiness comparison</text>
+        <text class="sub" x="300" y="502" text-anchor="middle">Compares approved records to live target; writes nothing</text>
+        <path class="arrow" d="M300,516 L300,546"/>
+
+        <rect class="box gate" x="100" y="550" width="400" height="56" rx="8"/>
+        <text class="lbl gate" x="300" y="574" text-anchor="middle">Named-human write-back approval</text>
+        <text class="sub" x="300" y="592" text-anchor="middle">Gate 2 — separate decision, separate person or later moment</text>
+        <path class="arrow" d="M300,606 L300,636"/>
+
+        <rect class="box" x="100" y="640" width="400" height="56" rx="8"/>
+        <text class="lbl" x="300" y="664" text-anchor="middle">Drift check, immediately pre-write</text>
+        <text class="sub" x="300" y="682" text-anchor="middle">Re-reads target cells to rule out change since approval</text>
+        <path class="arrow" d="M300,696 L300,726"/>
+
+        <rect class="box final" x="100" y="730" width="400" height="56" rx="8"/>
+        <text class="lbl final" x="300" y="754" text-anchor="middle">Verified staging write</text>
+        <text class="sub" x="300" y="772" fill="var(--accent-soft)" text-anchor="middle">Bounded mutation, confirmed by post-write readback</text>
+
+        <text class="sub" x="300" y="820" text-anchor="middle" style="font-size:12px;">
+          Executed once to date — 3 update requests, 9 cells, exact expected result, zero rollback.
+        </text>
+      </svg>
+    </div>
+
+    <h3>What the automated layer owns vs. what stays human</h3>
+    <p>
+      Deterministic adapters translate heterogeneous source formats into canonical records. Automated
+      controls verify known invariants — required relationship structures, unit preservation, source
+      accountability, artifact integrity — and a separate verification pass reloads the emitted artifacts
+      and checks record alignment, source dispositions, and recorded output hashes. That verification pass
+      is not represented as an independent semantic validator that re-derives every extracted relationship;
+      it checks known invariants and integrity, not open-ended correctness. Human judgment owns genuine
+      source ambiguity and every consequential write approval.
+    </p>
+
+    <h3>Scale of the locked proof set</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Measure</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Source documents in the bounded proof set</td><td>3 (one structured PDF pair, one spreadsheet with a recurring unit-of-credit ambiguity)</td></tr>
+          <tr><td>Source items reconciled</td><td>213 → 182 canonical records, 0 unaccounted</td></tr>
+          <tr><td>Records requiring human ambiguity disposition</td><td>A substantial subset, preserved source-faithful and explicitly accepted rather than converted</td></tr>
+          <tr><td>Records already aligned at readiness check (no mutation needed)</td><td>Most of the 182 approved records</td></tr>
+          <tr><td>Records isolated as the one governed write candidate</td><td>3 records → 3 update requests → 9 cells changed</td></tr>
+          <tr><td>Post-write outcome</td><td>Exact expected result on first readback; 0 rollback required</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h2>Evidence and Limits</h2>
+  <p>Every material claim below is labeled by how it was established. This is a feature of the evidence, not a hedge.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Claim</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>All extracted records were reviewed and approved by a named human, with unresolved ambiguity explicitly preserved rather than silently resolved.</td><td><span class="pill observed">Observed</span></td></tr>
+        <tr><td>Automated QA plus an independent verification pass reconciled every source item to a canonical record with zero corrections required.</td><td><span class="pill observed">Observed</span></td></tr>
+        <tr><td>A no-write readiness pass compared all approved records against the live target system without writing, and correctly isolated the one candidate mutation later approved and executed.</td><td><span class="pill observed">Observed</span></td></tr>
+        <tr><td>A bounded backend unit-mapping convention was approved and verified against every affected current record, with zero conflicts found.</td><td><span class="pill validated">Validated</span></td></tr>
+        <tr><td>A governed staging write was executed, drift-checked immediately before mutation, and confirmed against the exact expected result by post-write readback.</td><td><span class="pill validated">Validated</span></td></tr>
+        <tr><td>A multi-course relationship was proven to preserve its meaning correctly at the data layer, in a disposable, non-production test copy.</td><td><span class="pill validated">Validated — data layer only</span></td></tr>
+        <tr><td>Whether a separate, shared presentation layer correctly renders that same multi-course relationship to an end user.</td><td><span class="pill unknown">Unknown — explicitly out of scope</span></td></tr>
+        <tr><td>An earlier, separate lightweight import for a different partner reconciled 46 eligible source rows to 46 output rows after a diagnosed header-mismatch defect was fixed.</td><td><span class="pill observed">Observed — historical, precursor tool</span></td></tr>
+        <tr><td>Any production system was written to, or this pipeline has operated at production volume.</td><td><span class="pill observed">Confirmed — did not occur</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout flag">
+    <span class="callout-label">Known limits</span>
+    <ul style="margin-bottom:0;">
+      <li>The multi-course relationship's presentation-layer behavior is unverified and unclaimed — not because it is assumed to be fine, but because it belongs to a separate system outside this workflow's boundary.</li>
+      <li>Exactly one governed staging write has been executed under this model to date. It is real, verified evidence of the end-to-end path working — not a claim of sustained or high-volume operation.</li>
+      <li>No production write has occurred, and none is authorized by this evidence. Every mutation described here stayed inside a test or staging environment.</li>
+      <li>The historical 46-row result comes from a different, non-governed precursor tool, included only as motivating context for why source-format assumptions needed to be replaced with exact-source verification. It is not evidence of this pipeline's own throughput.</li>
+    </ul>
+  </div>
+
+  <h2>What This Demonstrates</h2>
+  <ul class="cap-list">
+    <li><strong>Document-to-record automation across inconsistent source formats</strong> — exact-source
+      controls, bounded deterministic extraction into a canonical schema, and automated QA plus a separate
+      verification pass, proven across three real source documents with a fully accounted reconciliation.</li>
+    <li><strong>Human-in-the-loop governance design</strong> — a two-gate model that keeps "we trust this
+      extraction" separate from "we are willing to write this," with genuine source ambiguity isolated and
+      resolved only through a named, verified human decision.</li>
+    <li><strong>Safe, verified system write-back</strong> — a no-write readiness process for downstream
+      change, a drift check immediately before mutation, and an executed, bounded staging write confirmed
+      correct by independent post-write readback.</li>
+  </ul>
+
+  <footer>
+    <p>
+      This is a sanitized summary. Partner and institution identities, internal identifiers, and exact
+      system locations have been generalized or omitted. A more detailed, inspectable evidence trail
+      exists for every material step described here — extraction approval, the no-write readiness pass,
+      the ambiguity-resolution decision, and the executed staging write — each independently verified
+      before being treated as complete.
+    </p>
+  </footer>
+
+</main>
+</body>
+</html>

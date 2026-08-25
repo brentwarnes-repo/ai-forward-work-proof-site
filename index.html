@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Brent Warnes designs and operationalizes AI-enabled workflows that turn messy inputs and conflicting evidence into verified, reviewable decisions.">
+  <title>Brent Warnes | AI Workflow Systems</title>
+  <style>
+    :root {
+      --paper: #f5f1ea;
+      --surface: #fffdf9;
+      --ink: #17232e;
+      --muted: #5d6871;
+      --line: #d8d2c7;
+      --teal: #0b7772;
+      --teal-dark: #075d59;
+      --teal-soft: #dcefed;
+      --orange: #cf5d2e;
+      --orange-soft: #fae8df;
+      --blue-soft: #e7eef8;
+      --gold-soft: #f3ead0;
+      --shadow: 0 20px 55px rgba(23, 35, 46, 0.10);
+      --radius: 22px;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(11,119,114,.10), transparent 23rem),
+        radial-gradient(circle at 92% 14%, rgba(207,93,46,.08), transparent 25rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+    .wrap { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+
+    .site-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+      font-size: .9rem;
+    }
+    .brand { font-weight: 800; letter-spacing: -.02em; text-decoration: none; }
+    .nav-links { display: flex; gap: 22px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-weight: 650; }
+    .nav-links a:hover { color: var(--ink); }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+
+    .hero { padding: 56px 0 78px; }
+    .hero-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: 38px; align-items: end; }
+    .eyebrow { color: var(--teal-dark); font-weight: 850; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 15px 0 22px; font-size: clamp(3rem, 7vw, 6.35rem); line-height: .91; letter-spacing: -.065em; max-width: 950px; }
+    .hero-copy { max-width: 820px; font-size: clamp(1.1rem, 2vw, 1.38rem); color: var(--muted); }
+    .hero-copy strong { color: var(--ink); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 0 19px;
+      border-radius: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(23,35,46,.12); }
+    .btn-primary { background: var(--ink); color: white; }
+    .btn-secondary { background: rgba(255,255,255,.5); }
+    .role-stack { display: grid; gap: 10px; }
+    .role-stack span { padding: 12px 14px; border-left: 3px solid var(--teal); background: rgba(255,255,255,.5); font-weight: 700; }
+
+    .review-path { margin-bottom: 84px; }
+    .review-card { background: var(--ink); color: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); }
+    .review-card h2 { margin: 0 0 6px; font-size: 1.15rem; letter-spacing: -.02em; }
+    .review-card > p { margin: 0 0 22px; color: #c8d0d6; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .step { position: relative; min-height: 148px; padding: 20px; border: 1px solid rgba(255,255,255,.14); border-radius: 16px; background: rgba(255,255,255,.055); }
+    .step-number { color: #86dad4; font-size: .76rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .step h3 { margin: 8px 0 7px; font-size: 1.25rem; }
+    .step p { margin: 0; color: #c8d0d6; font-size: .93rem; }
+
+    section { margin: 84px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 30px; }
+    .section-head h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1; letter-spacing: -.045em; }
+    .section-head p { max-width: 500px; margin: 0; color: var(--muted); }
+
+    .proof-card { background: var(--surface); border: 1px solid rgba(23,35,46,.09); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 30px; }
+    .proof-top { display: grid; grid-template-columns: 1.05fr .95fr; }
+    .proof-copy { padding: clamp(26px, 5vw, 52px); }
+    .kicker { display: inline-flex; gap: 8px; align-items: center; color: var(--teal-dark); font-size: .78rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .status-badge { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-dark); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 850; }
+    .status-badge.synthetic { background: var(--gold-soft); color: #765c16; }
+    .proof-copy h3 { margin: 16px 0 14px; font-size: clamp(2rem, 4vw, 3.15rem); line-height: 1; letter-spacing: -.048em; }
+    .proof-copy > p { color: var(--muted); font-size: 1.05rem; max-width: 650px; }
+    .capabilities { display: flex; flex-wrap: wrap; gap: 8px; margin: 23px 0; }
+    .capabilities span { padding: 7px 10px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; }
+    .proof-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 25px; }
+    .text-link { font-weight: 850; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    .boundary-note { margin-top: 22px; padding: 11px 13px; border-radius: 10px; background: var(--paper); border: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
+    .boundary-note strong { color: var(--ink); }
+
+    .proof-visual { min-height: 430px; padding: 32px; background: linear-gradient(145deg, #e8f2f0, #f9eee7); display: flex; flex-direction: column; justify-content: center; }
+    .flow { display: grid; gap: 10px; }
+    .flow-row { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr; align-items: center; }
+    .node { padding: 15px 12px; border-radius: 13px; background: rgba(255,255,255,.84); border: 1px solid rgba(23,35,46,.13); text-align: center; font-weight: 850; font-size: .85rem; box-shadow: 0 8px 20px rgba(23,35,46,.07); }
+    .node.human { background: var(--orange-soft); border-color: rgba(207,93,46,.28); }
+    .arrow { text-align: center; color: var(--muted); font-weight: 900; }
+    .gate-label { margin: 11px auto; width: fit-content; padding: 8px 12px; border: 1px dashed var(--orange); border-radius: 999px; color: #893d20; background: rgba(255,255,255,.55); font-size: .72rem; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    .visual-note { margin-top: 23px; padding: 14px 16px; background: rgba(255,255,255,.62); border-left: 4px solid var(--teal); border-radius: 8px; color: var(--muted); font-size: .88rem; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+    .metric { padding: 25px 26px; border-right: 1px solid var(--line); }
+    .metric:last-child { border-right: 0; }
+    .metric strong { display: block; font-size: clamp(1.55rem, 3vw, 2.45rem); line-height: 1; letter-spacing: -.045em; }
+    .metric span { display: block; margin-top: 8px; color: var(--muted); font-size: .82rem; }
+
+    .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .split-card { position: relative; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); background: rgba(255,255,255,.58); }
+    .split-card.ai { border-top: 6px solid var(--teal); }
+    .split-card.human { border-top: 6px solid var(--orange); }
+    .split-card h3 { margin: 4px 0 8px; font-size: 1.6rem; letter-spacing: -.035em; }
+    .split-card p { margin: 0 0 17px; color: var(--muted); }
+    .split-card ul { margin: 0; padding-left: 1.15rem; }
+    .split-card li { margin: 8px 0; }
+    .formula { margin-top: 22px; padding: 20px; border-radius: 15px; background: var(--ink); color: white; text-align: center; font-weight: 850; letter-spacing: -.02em; }
+    .formula span { color: #91dfda; }
+
+    .claim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .claim { padding: 20px; border-radius: 15px; background: var(--surface); border: 1px solid var(--line); }
+    .claim strong { display: block; margin-bottom: 8px; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; }
+    .claim p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .claim.observed strong { color: var(--teal-dark); }
+    .claim.validated strong { color: #315f9a; }
+    .claim.expected strong { color: #8a6818; }
+    .claim.unknown strong { color: #9a3e2c; }
+
+    .closing { background: var(--ink); color: white; border-radius: var(--radius); padding: clamp(30px, 6vw, 64px); display: grid; grid-template-columns: 1.4fr .6fr; gap: 30px; align-items: center; }
+    .closing h2 { margin: 0 0 12px; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: .96; letter-spacing: -.055em; }
+    .closing p { margin: 0; color: #c8d0d6; max-width: 700px; }
+    .closing .btn { border-color: white; background: white; color: var(--ink); }
+
+    footer { padding: 34px 0 48px; display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: .82rem; }
+    .published { color: var(--teal-dark); font-weight: 800; }
+
+    @media (max-width: 860px) {
+      .hero-grid, .proof-top, .closing { grid-template-columns: 1fr; }
+      .hero { padding-top: 34px; }
+      .role-stack { grid-template-columns: repeat(2, 1fr); }
+      .steps, .claim-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+      .proof-visual { min-height: auto; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(calc(100% - 24px), var(--max)); }
+      .nav-links { display: none; }
+      .hero { padding-bottom: 48px; }
+      h1 { font-size: clamp(3.2rem, 17vw, 4.9rem); }
+      .role-stack, .steps, .split-grid, .claim-grid { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 14px; }
+      .flow-row { grid-template-columns: 1fr; gap: 7px; }
+      .arrow { transform: rotate(90deg); }
+      .proof-copy, .proof-visual { padding: 25px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="#top">Brent Warnes</a>
+      <div class="nav-links">
+        <a href="#proof">Proof</a>
+        <a href="#boundary">Human + AI</a>
+        <a href="#claims">Claim discipline</a>
+      </div>
+      <span class="pill"><span class="dot" aria-hidden="true"></span>Public proof</span>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">AI operations · workflow architecture · governed automation</p>
+          <h1 id="hero-title">Operational truth, made inspectable.</h1>
+          <p class="hero-copy">I <strong>design and operationalize AI-enabled workflows</strong> that turn messy inputs and conflicting evidence into verified, reviewable decisions—and I can show the system, safeguards, evidence, and reusable design behind the result.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#proof">Review the proof <span aria-hidden="true">↓</span></a>
+            <a class="btn btn-secondary" href="https://github.com/brentwarnes-repo/ai-forward-work-proof-site" rel="noopener">Inspect the public repository <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="role-stack" aria-label="Capability areas">
+          <span>AI-enabled operations</span>
+          <span>Workflow & process architecture</span>
+          <span>Human-in-the-loop governance</span>
+          <span>Evidence, QA & verification</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="review-path wrap" aria-labelledby="review-title">
+      <div class="review-card">
+        <h2 id="review-title">A 90-second review path</h2>
+        <p>Start with the outcome. Inspect the controls. Go deeper only where useful.</p>
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">01 · Result</span>
+            <h3>Scan the proof cards</h3>
+            <p>See the problem, workflow, evidence, and limits without reading a long case study.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02 · Control</span>
+            <h3>Follow the gates</h3>
+            <p>See where automation acts, what stable systems remain authoritative, and what a human must still decide.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03 · Evidence</span>
+            <h3>Open the depth layer</h3>
+            <p>Trace claims into architecture notes, validation evidence, and public-safe artifacts.</p>
+          </article>
+        </div>
+      </div>
+    </aside>
+
+    <section id="proof" class="wrap" aria-labelledby="proof-title">
+      <div class="section-head">
+        <h2 id="proof-title">Selected proof</h2>
+        <p>Two real operational systems: one converts inconsistent documents into governed records; one extends a legacy purchase flow without replacing stable storefront ownership.</p>
+      </div>
+
+      <article class="proof-card" aria-labelledby="dtr-title">
+        <div class="proof-top">
+          <div class="proof-copy">
+            <div class="kicker"><span class="status-badge">Validated</span> Flagship · real operational workflow</div>
+            <h3 id="dtr-title">Document-to-Record Automation</h3>
+            <p>A controlled pipeline for translating inconsistent partner documents into canonical operational records. Exact-source checks, deterministic extraction, independent verification, exception isolation, and two separate human approval gates prevent “helpful” automation from becoming untraceable mutation.</p>
+            <div class="capabilities">
+              <span>Document intelligence</span><span>Deterministic QA</span><span>Human-in-the-loop design</span><span>Safe write controls</span>
+            </div>
+            <div class="proof-links">
+              <a class="text-link" href="case-studies/document-to-record-automation/evidence/public-safe/document-to-record-automation-case-study.html">Open visual case study →</a>
+              <a class="text-link" href="https://github.com/brentwarnes-repo/ai-forward-work-proof-site/blob/main/case-studies/document-to-record-automation/ARCHITECTURE.md" rel="noopener">Read architecture ↗</a>
+            </div>
+            <div class="boundary-note"><strong>Claim boundary:</strong> the public-safe demonstration uses synthetic records derived from a real operational workflow. It demonstrates governed staging and verification, not measured production business impact.</div>
+          </div>
+          <div class="proof-visual" aria-label="Document-to-record governed workflow">
+            <div class="flow">
+              <div class="flow-row">
+                <div class="node">Locked source</div><div class="arrow">→</div><div class="node">Parse + normalize</div><div class="arrow">→</div><div class="node">Automated QA</div>
+              </div>
+              <div class="gate-label">Human gate 1 · interpretation approval</div>
+              <div class="flow-row">
+                <div class="node">No-write diff</div><div class="arrow">→</div><div class="node human">Named approval</div><div class="arrow">→</div><div class="node">Bounded staging write</div>
+              </div>
+              <div class="gate-label">Human gate 2 · mutation approval</div>
+              <div class="flow-row">
+                <div class="node">Exact readback</div><div class="arrow">→</div><div class="node">Evidence pack</div><div class="arrow">→</div><div class="node human">Release decision</div>
+              </div>
+            </div>
+            <div class="visual-note"><strong>Design principle:</strong> approving an interpretation never authorizes a write. The two decisions remain separate trust boundaries.</div>
+          </div>
+        </div>
+        <div class="metrics" aria-label="Document-to-record evidence metrics">
+          <div class="metric"><strong>213</strong><span>source items evaluated</span></div>
+          <div class="metric"><strong>182</strong><span>records approved</span></div>
+          <div class="metric"><strong>2</strong><span>independent human gates</span></div>
+        </div>
+      </article>
+
+      <article class="proof-card" aria-labelledby="cart-title">
+        <div class="proof-top">
+          <div class="proof-copy">
+            <div class="kicker"><span class="status-badge">Validated</span> Bounded POC · real workflow evidence</div>
+            <h3 id="cart-title">Multi-Course Cart</h3>
+            <p>A narrow, reversible extension to an existing storefront purchase path. The design adds multi-item intent to the existing link contract, intercepts only qualifying clicks, reuses native cart behavior, and hands control back to the existing checkout instead of duplicating stable platform logic.</p>
+            <div class="capabilities">
+              <span>Product workflow design</span><span>Legacy-system extension</span><span>Blast-radius control</span><span>Rollout readiness</span>
+            </div>
+            <div class="proof-links">
+              <a class="text-link" href="https://github.com/brentwarnes-repo/ai-forward-work-proof-site/blob/main/case-studies/multi-course-cart/README.md" rel="noopener">Open business case ↗</a>
+              <a class="text-link" href="https://github.com/brentwarnes-repo/ai-forward-work-proof-site/blob/main/case-studies/multi-course-cart/ARCHITECTURE.md" rel="noopener">Read architecture ↗</a>
+            </div>
+            <div class="boundary-note"><strong>Claim boundary:</strong> validated on a test page for the documented two-item scenario. No production rollout, conversion/revenue impact, analytics parity, or production-ready partial-failure recovery is claimed.</div>
+          </div>
+          <div class="proof-visual" aria-label="Multi-course cart legacy-extension workflow">
+            <div class="flow">
+              <div class="flow-row">
+                <div class="node">Existing buy link</div><div class="arrow">→</div><div class="node">Multi-item data contract</div><div class="arrow">→</div><div class="node">Qualifying click</div>
+              </div>
+              <div class="gate-label">Single-item path remains untouched</div>
+              <div class="flow-row">
+                <div class="node">Compatibility layer</div><div class="arrow">→</div><div class="node">Native cart adds</div><div class="arrow">→</div><div class="node">Native checkout</div>
+              </div>
+              <div class="gate-label">Pilot authorization remains separate</div>
+              <div class="flow-row">
+                <div class="node">Open-risk ledger</div><div class="arrow">→</div><div class="node human">Engineering review</div><div class="arrow">→</div><div class="node human">Release decision</div>
+              </div>
+            </div>
+            <div class="visual-note"><strong>Design principle:</strong> add the smallest compatible capability, preserve stable ownership, and never treat “worked in a bounded test” as “ready to scale.”</div>
+          </div>
+        </div>
+        <div class="metrics" aria-label="Multi-course cart evidence markers">
+          <div class="metric"><strong>2 items</strong><span>validated paired purchase path</span></div>
+          <div class="metric"><strong>11</strong><span>rollout questions classified</span></div>
+          <div class="metric"><strong>Test page</strong><span>validation boundary</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="boundary" class="wrap" aria-labelledby="boundary-title">
+      <div class="section-head">
+        <h2 id="boundary-title">The leverage boundary</h2>
+        <p>AI should absorb the repeatable work. Human attention should be reserved for the decisions where context, consequences, taste, or accountability actually change the outcome.</p>
+      </div>
+      <div class="split-grid">
+        <article class="split-card ai">
+          <p class="eyebrow">AI does the volume work</p>
+          <h3>Prepare, transform, verify, package</h3>
+          <ul>
+            <li>Collect and normalize source material</li>
+            <li>Extract, compare, test, and flag exceptions</li>
+            <li>Draft evidence-backed artifacts and visuals</li>
+            <li>Run repeatable QA and link/claim checks</li>
+            <li>Return one complete review packet—not a pile of raw output</li>
+          </ul>
+        </article>
+        <article class="split-card human">
+          <p class="eyebrow" style="color:#9b431f">The human does the scarce work</p>
+          <h3>Frame, decide, approve, release</h3>
+          <ul>
+            <li>Choose the outcome and define what matters</li>
+            <li>Resolve ambiguity that requires real context</li>
+            <li>Make tradeoffs with business or reputational consequences</li>
+            <li>Approve bounded writes and public claims</li>
+            <li>Make the final taste and publication decision</li>
+          </ul>
+        </article>
+      </div>
+      <div class="formula"><span>Human-led judgment</span> + AI-led execution + independent verification = credible leverage</div>
+    </section>
+
+    <section id="claims" class="wrap" aria-labelledby="claims-title">
+      <div class="section-head">
+        <h2 id="claims-title">Every claim carries its status</h2>
+        <p>The proof surface distinguishes what was observed, what was tested, what is only expected, and what remains unknown.</p>
+      </div>
+      <div class="claim-grid">
+        <article class="claim observed"><strong>Observed</strong><p>Directly recorded in source evidence or an executed run.</p></article>
+        <article class="claim validated"><strong>Validated</strong><p>Confirmed by a defined test, review, or independent readback.</p></article>
+        <article class="claim expected"><strong>Expected</strong><p>A reasoned hypothesis that has not yet earned a validated label.</p></article>
+        <article class="claim unknown"><strong>Unknown</strong><p>Not measured, not available, or deliberately outside the claim boundary.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="closing">
+        <div>
+          <h2>Proof first. Depth on demand.</h2>
+          <p>The front door is deliberately brief. The architecture, evidence, limitations, and source artifacts remain one click deeper for reviewers who want to audit the work.</p>
+        </div>
+        <div><a class="btn" href="https://github.com/brentwarnes-repo/ai-forward-work-proof-site" rel="noopener">Inspect all public proof ↗</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>Brent Warnes · AI-forward systems, operations, workflow, and program/product work</span>
+    <span class="published">Published proof · claims remain evidence-bound</span>
+  </footer>
+</body>
+</html>
