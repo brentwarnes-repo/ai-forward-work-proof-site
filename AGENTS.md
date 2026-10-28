@@ -6,7 +6,7 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 - `chrome-devtools-axi` does not work for real measurement in this environment (open succeeds,
   snapshot/eval/screenshot fail or no-op). For real-browser QA (e.g. verifying `index.html`
   layout/overflow at specific viewports), use Chrome for Testing at
-  `/home/leah/.cache/chrome-for-testing/chrome/<version>/chrome-linux64/chrome` via
+  `~/.cache/chrome-for-testing/chrome/<version>/chrome-linux64/chrome` via
   `puppeteer-core` (`npm install puppeteer-core` in a scratch dir; it is not preinstalled).
   The host has no system `libnss3`/`libnspr4`, so the chrome binary fails with
   `error while loading shared libraries: libnspr4.so`; fix with a userspace-only shim:
